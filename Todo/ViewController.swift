@@ -10,9 +10,13 @@ import UIKit
 
 class ViewController: UITableViewController {
 
-    let items = ["Praneetha","Prathyusha","Harsha","Tarun"]
+    let defaults = UserDefaults.standard
+    var items = ["Praneetha","Prathyusha","Harsha","Tarun"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let itemsList = defaults.array(forKey: "ToDoList") as? [String]{
+            items = itemsList
+        }
         // Do any additional setup after loading the view.
     }
     
@@ -40,14 +44,23 @@ class ViewController: UITableViewController {
     }
 
     @IBAction func addItem(_ sender: UIBarButtonItem) {
-        
+        var textField = UITextField()
         let alert  = UIAlertController(title: "Add New ToDo", message: "", preferredStyle: .alert)
 //        Button Name is Add ToDo
         let action = UIAlertAction(title: "Add ToDo", style: .default) { (action) in
 //            what will be happen once the user clicks the Add ToDo button on our Alert
+//            print(textField.text)
+            self.items.append(textField.text!)
+            self.defaults.set(self.items, forKey: "ToDoList")
+            self.tableView.reloadData()
             
         }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new Todo"
+            textField = alertTextField
+        }
         alert.addAction(action)
+        present(alert,animated: true, completion: nil)
     }
     
 
